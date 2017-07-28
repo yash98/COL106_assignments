@@ -1,2 +1,2 @@
 # Assignments
-assignments
+ private repo assignments
