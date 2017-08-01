@@ -1,1 +1,4 @@
 *.pdf diff=pdf
+*.docx diff=docx
+*.odt diff=odt
+*jpeg diff=jpeg
