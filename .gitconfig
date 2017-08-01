@@ -1,0 +1,8 @@
+[diff "odt"]
+  binary = true
+[diff "pdf"]
+  binary = true
+[diff "docx"]
+  binary = true
+[diff "jpeg"]
+  binary = true
