@@ -1,0 +1,12 @@
+1. If you find any error in the exercises, 
+   kindly mail them to prathmesh.kallurkar@cse.iitd.ac.in
+
+2. Windows: 
+   Some students are facing problems while compiling a program on Windows.
+   Mostly, these problems relate to encoding issues. 
+   There are two solutions to this problem: 
+   a. Compile your programs with encoding flag : javac -encoding UTF8 program.java
+   b. Change the encoding of your java file to ascii/UTF8 : open program with notepad++ editor, and change its encoding to ascii/UTF8
+
+   In our experience, the Notepad++ (open source) editor on windows manages the indentation of the 
+   java source files correctly. 
