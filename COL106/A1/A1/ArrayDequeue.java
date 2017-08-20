@@ -1,41 +1,88 @@
 
 public class ArrayDequeue implements DequeInterface {
+  public Object[] arr = new Object[1];
+  public int front = 0;
+  public int rear = 0;
+
+  public int size(){
+    return ((arr.length + rear - front -1) % arr.length);
+  }
+
+  public boolean isEmpty(){
+    return (front == rear);
+  }
+
+  private void growArray() {
+    Object[] tempArr = new Object[(arr.length*2)];
+    for (int i = 0; i < arr.length-1; i++) {
+      tempArr[i] = arr[(front+i)%arr.length];
+    }
+    front = 0;
+    rear = arr.length;
+    arr = tempArr;
+  }
+
   public void insertFirst(Object o){
-    //you need to implement this
-    throw new java.lang.UnsupportedOperationException("Not implemented yet.");
+    if (this.size() == arr.length-1) {
+      this.growArray();
+    }
+    arr[(arr.length+front-1)%arr.length] = o;
+    front = (arr.length+front-1)%arr.length;
   }
   
   public void insertLast(Object o){
-//you need to implement this
-    throw new java.lang.UnsupportedOperationException("Not implemented yet.");
-    
+    if (this.size() == arr.length-1) {
+      this.growArray();
+    }
+    arr[rear] = o;
+    rear = (rear+1)% arr.length;
   }
   
+  
   public Object removeFirst(){
-    throw new java.lang.UnsupportedOperationException("Not implemented yet.");
+    if (this.isEmpty()) {
+      throw new EmptyDequeException();
+    } else {
+      front++;
+      return arr[front-1];
+    }
   }
   
   public Object removeLast(){
-    throw new  java.lang.UnsupportedOperationException("Not implemented yet.");
+    if (this.isEmpty()) {
+      throw new EmptyDequeException();
+    } else {
+      rear--;
+      return arr[rear];
+    }
   }
+
   public Object first(){
-    throw new  java.lang.UnsupportedOperationException("Not implemented yet.");
+    if (this.isEmpty()) {
+      throw new EmptyDequeException();
+    } else {
+      return arr[front];
+    }
   }
   
   public Object last(){
-    throw new java.lang.UnsupportedOperationException("Not implemented yet.");
+    if (this.isEmpty()) {
+      throw new EmptyDequeException();
+    } else {
+      return arr[rear-1];
+    }
   }
   
-  public int size(){
-    throw new java.lang.UnsupportedOperationException("Not implemented yet.");
-  }
-  public boolean isEmpty(){
-    throw new java.lang.UnsupportedOperationException("Not implemented yet.");
-  }
   public String toString(){
-    throw new java.lang.UnsupportedOperationException("Not implemented yet.");
+    String str = "[";
+    for (int i = 0; i < arr.length-2; i++) {
+      str += arr[(front+i)%arr.length].toString();
+      str += ",";
+    }
+    str += arr[arr.length-2];
+    str += "]";
+    return str;
   }
-  
   
   public static void main(String[] args){
     int  N = 10;
