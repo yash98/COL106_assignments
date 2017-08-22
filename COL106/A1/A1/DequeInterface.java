@@ -10,9 +10,9 @@ public interface DequeInterface {
   public String toString();
   
   
-  class EmptyDequeException extends Exception{  
-    EmptyDequeException(String s){  
-      super(s);  
+  class EmptyDequeException extends Exception{
+    EmptyDequeException(String s){
+      super(s);
     }  
   }
 }

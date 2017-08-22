@@ -1,5 +1,6 @@
 
 public class ArrayDequeue implements DequeInterface {
+
   public Object[] arr = new Object[1];
   public int front = 0;
   public int rear = 0;
@@ -18,7 +19,7 @@ public class ArrayDequeue implements DequeInterface {
       tempArr[i] = arr[(front+i)%arr.length];
     }
     front = 0;
-    rear = arr.length;
+    rear = arr.length-1;
     arr = tempArr;
   }
 
@@ -39,49 +40,60 @@ public class ArrayDequeue implements DequeInterface {
   }
   
   
-  public Object removeFirst(){
+  public Object removeFirst() throws EmptyDequeException{
     if (this.isEmpty()) {
-      throw new EmptyDequeException();
+      throw new EmptyDequeException("Can\'t remove first from an empty Deque.");
     } else {
-      front++;
-      return arr[front-1];
+      front = (front+1)%arr.length;
+      return arr[(arr.length+front-1)%arr.length];
     }
   }
   
-  public Object removeLast(){
+  public Object removeLast() throws EmptyDequeException{
     if (this.isEmpty()) {
-      throw new EmptyDequeException();
+      throw new EmptyDequeException("Can\'t remove last from an empty Deque.");
     } else {
-      rear--;
+      rear = (arr.length+rear-1)% arr.length;;
       return arr[rear];
     }
   }
 
-  public Object first(){
+  public Object first() throws EmptyDequeException{
     if (this.isEmpty()) {
-      throw new EmptyDequeException();
+      throw new EmptyDequeException("The Deque is empty, has no first.");
     } else {
       return arr[front];
     }
   }
   
-  public Object last(){
+  public Object last() throws EmptyDequeException{
     if (this.isEmpty()) {
-      throw new EmptyDequeException();
+      throw new EmptyDequeException("The Deque is empty, has no last.");
     } else {
       return arr[rear-1];
     }
   }
   
   public String toString(){
-    String str = "[";
-    for (int i = 0; i < arr.length-2; i++) {
-      str += arr[(front+i)%arr.length].toString();
-      str += ",";
+    if (this.isEmpty()) {
+      return "[]";
+    } else {
+      String str = "[";
+      for (int i = 0; i < this.size()-2; i++) {
+        try {
+          str += arr[(front+i)%arr.length].toString();
+          System.out.println(str);
+          str += ", ";
+        } catch (NullPointerException e) {
+          System.out.println(arr[(front+i)%arr.length]);
+          System.out.println(e);
+        }
+      }
+      str += arr[(front+this.size()-2)%arr.length].toString();
+      System.out.println(str);
+      str += "]";
+      return str;
     }
-    str += arr[arr.length-2];
-    str += "]";
-    return str;
   }
   
   public static void main(String[] args){
@@ -126,7 +138,7 @@ public class ArrayDequeue implements DequeInterface {
     
     int size3 = myDeque.size();
     System.out.println("Size: " + myDeque.size());
-    System.out.println(myDeque.toString());
+    //System.out.println(myDeque.toString());
     
     if(size3 != N){
       System.err.println("Incorrect size of the queue.");
