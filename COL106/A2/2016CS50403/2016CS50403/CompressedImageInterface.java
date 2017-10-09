@@ -19,6 +19,8 @@ public interface CompressedImageInterface {
     public void performXor(CompressedImageInterface img) throws BoundsMismatchException;
     
     public String toStringUnCompressed();
+
+    // public String toStringUnCompressedLn();
     
     public String toStringCompressed();
 

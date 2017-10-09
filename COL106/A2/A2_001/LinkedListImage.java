@@ -1,554 +1,70 @@
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
 
 public class LinkedListImage implements CompressedImageInterface {
-    Node[] arr;
-    int height, width;
 
-    private class Node {
-        public int begin;
-        public int end ;
-        public Node prev;
-        public Node next;
-
-        public Node (int begin, int end, Node prev, Node next) {
-            this.begin = begin;
-            this.end = end;
-            this.prev = prev;
-            this.next = next;
-        }
-
-    }
-
-    public void boolConv(boolean[][] grid, int width, int height) {
-        Node currentNode;
-        this.width = width;
-        this.height = height;
-        this.arr = new Node[height];
-		for (int i=0; i<height; i++) {
-            currentNode = new Node(-1, -1, null, null);
-            this.arr[i] = currentNode;
-            int last = -1;
-            for (int j=0; j<width; j++) {
-                if (last == 1) {
-                    if (!grid[i][j]) {
-                        currentNode.next = new Node(-1, -1, null, null);
-                        currentNode.next.prev = currentNode;
-                        currentNode = currentNode.next;
-                        currentNode.begin = j;
-                        last = 0;
-                    }
-                }
-                else if (last == 0) {
-                    if (grid[i][j]) {
-                        currentNode.end = j-1;
-                        last = 1;
-                    }
-                } else {
-                    if (!grid[i][j]) {
-                        currentNode.begin = j;
-                        last = 0;
-                    }
-                }
-            }
-            if (currentNode.end == -1) {
-                if (currentNode.begin != -1) {
-                    currentNode.end = width-1;
-                } else if (currentNode.begin == -1) {
-                    this.arr[i] = null;
-                }
-            }
-        }
-    }
+	public LinkedListImage(String filename)
+	{
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
+	}
 
     public LinkedListImage(boolean[][] grid, int width, int height)
     {
-        boolConv(grid, width, height);
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
 
-    public LinkedListImage(String filename)
-	{
-        try {
-            FileReader fr = new FileReader(filename);
-            BufferedReader br = new BufferedReader(fr);
-
-            String[] size = br.readLine().split(" ");
-            int width = Integer.parseInt(size[0]);
-            int height = Integer.parseInt(size[1]);
-            boolean[][] tempgrid = new boolean[height][width];
-            for (int i=0; i<height; i++) {
-                String[] row = br.readLine().split(" ");
-                for (int j=0; j<width; j++) {
-                    if (row[j].equals("1")) {
-                        tempgrid[i][j] = true;
-                    } else {
-                        tempgrid[i][j] = false;
-                    }
-                }
-            }
-            boolConv(tempgrid, width, height);
-            br.close();
-        } catch (IOException i) {
-            System.out.println("invalid file name or lines in file mismatch");
-        }
-	}
-
-    public boolean getPixelValue(int x, int y) throws PixelOutOfBoundException
+    public boolean getPixelValue(int x, int y)
     {
-		if ((x > this.height-1) || (y > this.width-1)) {
-            throw new PixelOutOfBoundException("outofbound");
-        } else {
-            Node currentNode = this.arr[x];
-            while ( currentNode != null) {
-                if ((currentNode.begin <= y) && (y <= currentNode.end)) {
-                    return false;
-                } else if (currentNode.begin >= y) {
-                    return true;
-                }
-                currentNode = currentNode.next;
-            }
-            return true;
-        }
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
 
-    public void setPixelValue(int x, int y, boolean val) throws PixelOutOfBoundException
+    public void setPixelValue(int x, int y, boolean val)
     {
-        boolean notDone = true;
-		if ((x > this.height-1) || (y > this.width-1) || (x < 0) || (y < 0)) {
-            throw new PixelOutOfBoundException("outofbound");
-        } else {
-            Node currentNode = this.arr[x];
-            while (notDone &&  currentNode != null) {
-
-                if (val) {
-                    // setting 1
-                    if ((currentNode.begin < y) && (y < currentNode.end)) {
-                        // split condition
-                        Node firstNode = new Node(currentNode.begin, y-1, currentNode.prev, null);
-                        Node secondNode = new Node(y+1, currentNode.end, firstNode, currentNode.next);
-                        firstNode.next = secondNode;
-                        notDone = false;
-                    } else if (currentNode.begin == y) {
-                        // begin condition
-                        currentNode.begin = y+1;
-                        notDone = false;
-                    } else if (y == currentNode.end) {
-                        // end condtion
-                        currentNode.end = y-1;
-                        notDone = false;
-                    }
-                } else {
-                     // setting 0
-                     if (!(currentNode.prev != null) && (currentNode.prev.end == y-1) && (y+1 == currentNode.begin)) {
-                        // join condition , 1st part of conditioin checks so no exception is raised in conditonal itself
-                        // prevents 1st element entering this loop
-                        Node prevOfPrev;
-                        Node next;
-                        // gives values corresponding to second
-                        if ( currentNode.prev.prev != null) {
-                            prevOfPrev = currentNode.prev.prev;
-                        } else {
-                            prevOfPrev = null;
-                        }
-                        if ( currentNode.next != null) {
-                            // gives value corresponding to last
-                            next = currentNode.next;
-                        } else {
-                            next = null;
-                        }
-                        Node jointNode = new Node(currentNode.prev.begin, currentNode.end, prevOfPrev, next);
-                        if ( currentNode.prev.prev != null) {
-                            // if 2nd 
-                            currentNode.prev.prev.next = jointNode;
-                        }
-                        if ( currentNode.next != null) {
-                            // if last
-                            currentNode.next.prev = jointNode;
-                        }
-                        notDone = false;
-                    } else if (currentNode.begin == y+1) {
-                        // begin condition
-                        currentNode.begin = y-1;
-                        notDone = false;
-                    } else if (y-1 == currentNode.end) {
-                        // end condtion
-                        currentNode.end = y+1;
-                        notDone = false;
-                    } else if (y < currentNode.begin) {
-                        // new node creation
-                        Node newNode = new Node(y, y, null,currentNode);
-                        if (currentNode.prev != null) {
-                            newNode.prev = currentNode.prev;
-                            currentNode.prev.next = newNode;
-                        }
-                        currentNode.prev = newNode;
-                        notDone = false;
-                    }
-                }
-                currentNode = currentNode.next;
-            }
-            if (notDone) {
-                // only case left is insertion after final node
-                currentNode = arr[x];
-                if (currentNode != null) {
-                    while(currentNode.next != null) {
-                        currentNode = currentNode.next;
-                    }
-                    Node newNode = new Node(y, y, currentNode, null);
-                    currentNode.next = newNode;
-                } else {
-                    // no element in list
-                    arr[x] = new Node (y, y, null, null);
-                }   
-            }
-        }
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
 
     public int[] numberOfBlackPixels()
     {
-        int[] countArray = new int[this.height];
-		for (int i = 0; i < height; i++) {
-            Node currentNode = this.arr[i];
-            while ( currentNode != null) {
-                countArray[i] += currentNode.end - currentNode.begin +1;
-                currentNode =  currentNode.next;
-            }
-        }
-        return countArray;
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
     
     public void invert()
     {
-		for (int i = 0; i < this.height; i++) {
-            Node currentNode = this.arr[i];
-            Node headOfInv = new Node(0, currentNode.begin, null, null);
-            Node invNode = headOfInv;
-            while ( currentNode != null) {
-                if (currentNode.begin == 0) {
-                    headOfInv.begin = currentNode.begin;
-                }
-                invNode.end = currentNode.begin;
-                Node tempNode = new Node(currentNode.end, -1, invNode, null);
-                invNode = tempNode;
-                currentNode = currentNode.next;
-            }
-            if (invNode.end == -1) {
-                invNode.end = this.width-1;
-            }
-            this.arr[i] = headOfInv;
-        }
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
     
-    public void performAnd(CompressedImageInterface img) throws BoundsMismatchException
+    public void performAnd(CompressedImageInterface img)
     {
-        if (img instanceof LinkedListImage) {
-            System.out.println("1 running");
-            LinkedListImage image = (LinkedListImage) img;
-            if ((image.height != this.height) || (image.width != this.width)) {
-                throw new BoundsMismatchException("mismatch");
-            }
-            for (int x = 0; x < this.height; x++) {
-                Node nodeOfThis = this.arr[x];
-                Node nodeOfImage = image.arr[x];
-                Node currentSaveNode = new Node(-1, -1, null, null);
-                this.arr[x] = currentSaveNode;
-                while (nodeOfImage != null && nodeOfThis != null) {
-                    if (nodeOfImage.begin < nodeOfThis.begin) {
-                        // 2b.....1b..
-                        if (nodeOfImage.end < nodeOfThis.end) {
-                            // 2e...1e..
-                            if (nodeOfImage.end > nodeOfThis.begin) {
-                                // 2b 00000 1b 00000 2e 0000 1e
-                                Node tempSaveNode = new Node(nodeOfImage.begin, nodeOfThis.end, currentSaveNode, null);
-                                currentSaveNode = tempSaveNode;
-                                nodeOfImage = nodeOfImage.next;
-                                nodeOfThis = nodeOfThis.next;
-                            } else {
-                                // 2b 0000 2e 11(dont transverse-->)11 1b 0000 1e
-                                Node tempSaveNode = new Node(nodeOfImage.begin, nodeOfImage.end, currentSaveNode, null);
-                                currentSaveNode = tempSaveNode;
-                                nodeOfImage = nodeOfImage.next;
-                            }
-                        } else {
-                            // 1e...2e..
-                            // 2b 00000 1b 000 1e 0000 2e
-                            Node tempSaveNode = new Node(nodeOfImage.begin, nodeOfImage.end, currentSaveNode, null);
-                            currentSaveNode = tempSaveNode;
-                            nodeOfImage = nodeOfImage.next;
-                            nodeOfThis = nodeOfThis.next;
-                        }
-                    } else {
-                        // 1b....2b..
-                        if (nodeOfImage.end < nodeOfThis.end) {
-                            // 2e.....1e
-                            // 1b 000 2b 000 2e 0000 1e
-                            Node tempSaveNode = new Node(nodeOfThis.begin, nodeOfThis.end, currentSaveNode, null);
-                            currentSaveNode = tempSaveNode;
-                            nodeOfImage = nodeOfImage.next;
-                            nodeOfThis = nodeOfThis.next;
-                        } else {
-                            // 1e.....2e
-                            if (nodeOfThis.end > nodeOfImage.begin) {
-                                // 1b 0000 2b 000 1e 0000 2e
-                                Node tempSaveNode = new Node(nodeOfThis.begin, nodeOfImage.end, currentSaveNode, null);
-                                currentSaveNode = tempSaveNode;
-                                nodeOfImage = nodeOfImage.next;
-                                nodeOfThis = nodeOfThis.next;
-                            } else {
-                                // 1b 00 1e 11(dont tranverse -->)11  2b 000 2e
-                                Node tempSaveNode = new Node(nodeOfThis.begin, nodeOfThis.end, currentSaveNode, null);
-                                currentSaveNode = tempSaveNode;
-                                nodeOfThis = nodeOfThis.next;
-                            }
-                        }
-                    }
-                }
-                // concatanate remaining of either
-                if (!(nodeOfImage == null && nodeOfThis == null)) {
-                    if (nodeOfImage == null) {
-                        currentSaveNode.next = nodeOfThis;
-                    } else {
-                        currentSaveNode.next = nodeOfImage;
-                    }
-                }
-            }
-        } else {
-            String s = img.toStringCompressed();
-            s = s.substring(0, s.indexOf(','));
-            String[] hw = s.split(" ");
-            if ((Integer.parseInt(hw[0]) != this.height) || (Integer.parseInt(hw[1]) != this.width)) {
-                throw new BoundsMismatchException("mismatch");
-            }
-            try {
-                Node currentNode;
-                for (int i=0; i<this.height; i++) {
-                    currentNode = new Node(-1, -1, null, null);
-                    Node headOfNew = currentNode;
-                    int last = -1;
-                    for (int j=0; j<this.width; j++) {
-                        if (last == 1) {
-                            if (!(this.getPixelValue(i, j) && img.getPixelValue(i, j))) {
-                                currentNode.next = new Node(-1, -1, null, null);
-                                currentNode.next.prev = currentNode;
-                                currentNode = currentNode.next;
-                                currentNode.begin = j;
-                                last = 0;
-                            }
-                        }
-                        else if (last == 0) {
-                            if (this.getPixelValue(i, j) && img.getPixelValue(i, j)) {
-                                currentNode.end = j-1;
-                                last = 1;
-                            }
-                        } else {
-                            if (!(this.getPixelValue(i, j) && img.getPixelValue(i, j))) {
-                                currentNode.begin = j;
-                                last = 0;
-                            }
-                        }
-                    }
-                    if (currentNode.end == -1) {
-                        if (currentNode.begin != -1) {
-                            currentNode.end = width-1;
-                        } else if (currentNode.begin == -1) {
-                            headOfNew = null;
-                        }
-                    }
-                    this.arr[i] = headOfNew;
-                }
-            } catch (PixelOutOfBoundException p) {
-                System.out.println(p);
-                throw new BoundsMismatchException("mismatch");
-            }
-        }
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
     
-    public void performOr(CompressedImageInterface img) throws BoundsMismatchException
+    public void performOr(CompressedImageInterface img)
     {
-        String s = img.toStringCompressed();
-        s = s.substring(0, s.indexOf(','));
-        String[] hw = s.split(" ");
-        if ((Integer.parseInt(hw[0]) != this.height) || (Integer.parseInt(hw[1]) != this.width)) {
-            throw new BoundsMismatchException("mismatch");
-        }
-        Node currentNode;
-        try {
-            for (int i=0; i<this.height; i++) {
-                currentNode = new Node(-1, -1, null, null);
-                Node headOfNew = currentNode;
-                int last = -1;
-                for (int j=0; j<this.width; j++) {
-                    if (last == 1) {
-                        if (!(this.getPixelValue(i, j) || img.getPixelValue(i, j))) {
-                            currentNode.next = new Node(-1, -1, null, null);
-                            currentNode.next.prev = currentNode;
-                            currentNode = currentNode.next;
-                            currentNode.begin = j;
-                            last = 0;
-                        }
-                    }
-                    else if (last == 0) {
-                        if (this.getPixelValue(i, j) || img.getPixelValue(i, j)) {
-                            currentNode.end = j-1;
-                            last = 1;
-                        }
-                    } else {
-                        if (!(this.getPixelValue(i, j) || img.getPixelValue(i, j))) {
-                            currentNode.begin = j;
-                            last = 0;
-                        }
-                    }
-                }
-                if (currentNode.end == -1) {
-                    if (currentNode.begin != -1) {
-                        currentNode.end = width-1;
-                    } else if (currentNode.begin == -1) {
-                        headOfNew = null;
-                    }
-                }
-                this.arr[i] = headOfNew;
-            }
-        } catch (PixelOutOfBoundException p) {
-            System.out.println(p);
-            throw new BoundsMismatchException("mismatch");
-        }
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
     
-    public void performXor(CompressedImageInterface img) throws BoundsMismatchException
+    public void performXor(CompressedImageInterface img)
     {
-        String s = img.toStringCompressed();
-        s = s.substring(0, s.indexOf(','));
-        String[] hw = s.split(" ");
-        if ((Integer.parseInt(hw[0]) != this.height) || (Integer.parseInt(hw[1]) != this.width)) {
-            throw new BoundsMismatchException("mismatch");
-        }
-        try {
-            Node currentNode;
-            for (int i=0; i<this.height; i++) {
-                currentNode = new Node(-1, -1, null, null);
-                Node headOfNew = currentNode;
-                int last = -1;
-                for (int j=0; j<this.width; j++) {
-                    if (last == 1) {
-                        if (!(this.getPixelValue(i, j) ^ img.getPixelValue(i, j))) {
-                            currentNode.next = new Node(-1, -1, null, null);
-                            currentNode.next.prev = currentNode;
-                            currentNode = currentNode.next;
-                            currentNode.begin = j;
-                            last = 0;
-                        }
-                    }
-                    else if (last == 0) {
-                        if (this.getPixelValue(i, j) ^ img.getPixelValue(i, j)) {
-                            currentNode.end = j-1;
-                            last = 1;
-                        }
-                    } else {
-                        if (!(this.getPixelValue(i, j) ^ img.getPixelValue(i, j))) {
-                            currentNode.begin = j;
-                            last = 0;
-                        }
-                    }
-                }
-                if (currentNode.end == -1) {
-                    if (currentNode.begin != -1) {
-                        currentNode.end = width-1;
-                    } else if (currentNode.begin == -1) {
-                        headOfNew = null;
-                    }
-                }
-                this.arr[i] = headOfNew;
-            }
-        } catch (PixelOutOfBoundException p) {
-            System.out.println(p);
-            throw new BoundsMismatchException("mismatch");
-        }
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
     
     public String toStringUnCompressed()
     {
-        String s = Integer.toString(this.height) + " " + Integer.toString(this.width) + ",";
-        for (int i = 0; i < this.height; i++) {
-            Node currentNode = this.arr[i];
-            if (currentNode != null) {
-                for (int j = 0; j < currentNode.begin; j++) {
-                    s += "1 ";
-                }
-                while ( currentNode != null) {
-                    for (int j = 0; j < currentNode.end-currentNode.begin+1; j++) {
-                        s += "0 ";
-                    }
-                    try {
-                        for (int j = 0; j < currentNode.next.begin-currentNode.end-1; j++) {
-                            s += "1 ";
-                        }
-                    } catch (NullPointerException npe) {
-                        for (int j = 0; j < this.width-currentNode.end-1; j++) {
-                            s += "1 ";
-                        }
-                    }
-                    currentNode = currentNode.next;
-                }
-            } else {
-                for (int j = 0; j < this.width; j++) {
-                    s += "1 ";
-                }
-            }
-            s = s.substring(0, s.length()-1);
-            s += ", ";
-        }
-        s = s.substring(0, s.length()-2);
-        return s;
-    }
-
-    public String toStringUnCompressedLn()
-    {
-        String s = Integer.toString(this.height) + " " + Integer.toString(this.width) + "\n";
-        for (int i = 0; i < this.height; i++) {
-            Node currentNode = this.arr[i];
-            if (currentNode != null) {
-                for (int j = 0; j < currentNode.begin; j++) {
-                    s += "1 ";
-                }
-                while ( currentNode != null) {
-                    for (int j = 0; j < currentNode.end-currentNode.begin+1; j++) {
-                        s += "0 ";
-                    }
-                    try {
-                        for (int j = 0; j < currentNode.next.begin-currentNode.end-1; j++) {
-                            s += "1 ";
-                        }
-                    } catch (NullPointerException npe) {
-                        for (int j = 0; j < this.width-currentNode.end-1; j++) {
-                            s += "1 ";
-                        }
-                    }
-                    currentNode = currentNode.next;
-                }
-            } else {
-                for (int j = 0; j < this.width; j++) {
-                    s += "1 ";
-                }
-            }
-            s += "\n";
-        }
-        return s;
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
     
     public String toStringCompressed()
     {
-        String s = Integer.toString(this.height) + " " + Integer.toString(this.width) + ",";
-        for (int i = 0; i < this.height; i++) {
-            Node currentNode = this.arr[i];
-            while ( currentNode != null) {
-                s += " " + Integer.toString(currentNode.begin) + " " + Integer.toString(currentNode.end);
-                currentNode = currentNode.next;
-            }
-            s += " -1,";
-        }
-        s = s.substring(0, s.length()-1);
-        return s;
+		//you need to implement this
+		throw new java.lang.UnsupportedOperationException("Not implemented yet.");
     }
 
     public static void main(String[] args) {
@@ -598,13 +114,13 @@ public class LinkedListImage implements CompressedImageInterface {
     	// check Xor
         try
         {
-            img1.performXor(img2);  
+        	img1.performXor(img2);       
         }
         catch (BoundsMismatchException e)
         {
             System.out.println("Errorrrrrrrr");
         }
-    	for (int i = 0; i < 16; i++) {
+    	for (int i = 0; i < 16; i++)
     		for (int j = 0; j < 16; j++)
     		{
                 try
@@ -615,14 +131,14 @@ public class LinkedListImage implements CompressedImageInterface {
                 {
                     System.out.println("Errorrrrrrrr");
                 }
-            }
-        }
+    		}
 
     	if (!success)
     	{
     		System.out.println("performXor or getPixelValue ERROR");
     		return;
     	}
+
     	// check setPixelValue
     	for (int i = 0; i < 16; i++)
         {
@@ -696,10 +212,7 @@ public class LinkedListImage implements CompressedImageInterface {
         // check And
         try
         {
-            System.out.println(img1.toStringUnCompressedLn());
-            System.out.println(img2.toStringUnCompressedLn());
-            img1.performAnd(img2);
-            System.out.println(img1.toStringCompressed());
+            img1.performAnd(img2);    
         }
         catch (BoundsMismatchException e)
         {
@@ -725,7 +238,7 @@ public class LinkedListImage implements CompressedImageInterface {
 
     	// check toStringUnCompressed
         String img_ans_uncomp = "16 16, 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1, 1 1 1 1 1 0 0 0 1 1 1 1 1 1 1 1, 1 1 1 0 0 0 0 0 1 1 1 1 1 1 1 1, 1 1 0 0 0 0 0 0 1 1 1 1 1 1 1 1, 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1, 1 1 1 1 1 1 0 0 1 1 1 1 1 1 1 1, 1 1 1 1 1 1 0 0 1 1 1 1 1 1 1 1, 1 1 1 1 0 0 0 1 1 1 1 1 1 1 1 1, 1 1 0 0 0 1 1 1 1 1 1 1 1 1 1 1, 1 1 0 0 1 1 1 1 1 1 1 1 1 1 0 0, 1 1 0 1 1 1 1 1 1 1 1 1 1 0 0 0, 1 1 1 1 1 1 1 1 1 1 1 0 0 0 1 1, 1 1 1 1 1 1 1 1 1 1 1 0 0 1 1 1, 1 1 1 1 1 1 1 1 1 1 0 0 1 1 1 1, 1 1 1 1 1 1 1 1 1 0 0 1 1 1 1 1, 1 1 1 1 1 1 1 0 0 0 1 1 1 1 1 1";
-        success = success && (img1.toStringUnCompressed().equals(img_ans_uncomp)) && (img2.toStringUnCompressed().equals(img_ans_uncomp));
+        success = success && (img1.toStringUnCompressed().equals(img_ans_uncomp)) && (img2.toStringUnCompressed().equals(img_ans));
 
         if (!success)
         {
