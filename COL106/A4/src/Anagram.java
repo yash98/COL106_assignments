@@ -368,15 +368,15 @@ public class Anagram {
 //                    wr.write("-1"+"\n");
                 } else {
                     for (int j=0; j<wl.size(); j++) {
-//                        System.out.println(wl.get(j));
-                        wr.write(wl.get(j)+"\n");
+                        System.out.println(wl.get(j));
+//                        wr.write(wl.get(j)+"\n");
                     }
+                    System.out.println("-1");
 //                    System.out.println(wl.size());
 //                    n++;
 //                    System.out.println(n);
                 }
             }
-            System.out.println("-1");
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
